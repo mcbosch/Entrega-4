@@ -364,6 +364,7 @@ rLWilks <- function(n,p,a,b){
   for (i in 1:n){
     l = c(l, LWilks(p,a,b))
   }
+  return(l)
 }
 ```
 
@@ -372,12 +373,25 @@ Una vez creadas nuestras funciones generamos unna muestra de tamaño 100 y hacem
 ```{r}
 a = 5
 b = 4
-p = 6
+p = 1
 muestra = rLWilks(100,p,a,b)
 his <- as.tibble(muestra)
-ggplot(data1, aes(x = value)) +
-  geom_histogram(binwidth = 1, color = 'black', fill = 'skyblue')+labs(title = "Histograma L Wilks con p = 6, a = 5 y b= 4") +
+ggplot(his, aes(x = value)) +
+  geom_histogram(binwidth = 1e-1, color = 'black', fill = 'skyblue')+labs(title = "Histograma L Wilks con p = 1, a = 5 y b= 4") +
   theme_minimal()
 ```
 
-Lo definimos ahora con las funciones beta: ...
+Lo definimos ahora con las funciones beta: 
+
+```{r}
+L = rbeta(100,(a+1-p)/2,b/2,ncp = 0)
+for (i in 1:p){
+  L = L*rbeta(100,(a+1-p)/2,b/2,ncp = 0)
+}
+his2 <- as.tibble(matrix(L,ncol = 1))
+
+ggplot(his2, aes(x = V1)) +
+  geom_histogram(binwidth =1e-1, color = 'black', fill = 'grey')+labs(title = "Histograma L Wilks con p = 1, a = 5 y b= 4") +
+  theme_minimal()
+```
+
